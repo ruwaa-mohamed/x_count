@@ -39,7 +39,7 @@ def main():
 		l = seq.count("X")
 		L = len(seq)
 		perc = "%2.3f" %(l/L*100)
-		file_out.write(','.join([seqid, str(l), str(L), perc]))
+		file_out.write(','.join([seqid, str(l), str(L), perc])+'\n')
 		
 
 # ----- main() ----- #
