@@ -27,19 +27,26 @@ def main():
 	path_in = args['f']
 	path_out = args['o']
 	
-	n = int(int(subprocess.check_output(["wc", "-l", path_in]).split()[0])/2)
+	#n = int(int(subprocess.check_output(["wc", "-l", path_in]).split()[0])/2)
+	counts_dict = dict()
 	
 	file_in = open(path_in)
 	file_out = open(path_out, "w")
 	file_out.write("#SEQID,SLen,XLen,Per\n")
 
-	for i in range(n):
-		seqid = file_in.readline().rstrip()
-		seq = file_in.readline()
-		l = seq.count("X")
-		L = len(seq)
-		perc = "%2.3f" %(l/L*100)
-		file_out.write(','.join([seqid, str(l), str(L), perc])+'\n')
+	for line in file_in:
+		if line.startswith('>'):
+			seqid = line.rstrip()
+		else:
+			l = line.count("X")
+			L = len(line)
+			if seqid not in counts_dict.keys():
+				counts_dict[seqid] = [l, L]
+			else:
+				counts_dict[seqid] = [counts_dict[seqid][0]+l, counts_dict[seqid][1]+L]
+	for key, val in counts_dict.items():
+		perc = "%2.3f" %(val[0]/val[1]*100)
+		file_out.write(','.join([key, str(val[0]), str(val[1]), perc])+'\n')
 		
 
 # ----- main() ----- #
